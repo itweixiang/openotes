@@ -143,7 +143,13 @@
 
 - RocketMQ如何实现事务？
 
-  生产者需要自行实现事务监听器，通过监听器的executeLocalTransation方法，执行本地事务。在发送消息时，通过事务消息的方法进行发送。生产者会向broker查询事务消息，成功接收后，会执行checkLocalTransation的方法，此时便可以对本地事务进行提交。
+  1、生产者发送半事务消息到RocketMQ服务端
+
+  2、RocketMQ服务端持久化消息后，向生产者发送ACK
+
+  3、生产者执行本地事务逻辑，执行成功则发送Commit至RocketMQ服务端。失败则发送Rollback。
+
+  4、若没有发送时，RocketMQ服务端会选择任意生产者发起消息回查，确认事务的执行情况。
 
   
 
@@ -201,7 +207,7 @@
 
 - Master Broker如何将消息同步给Slave Broker?
 
-  Slave会启动一个定时任务，10秒轮训一次，向Master拉取数据topic信息、消费者offset和订阅组信息等。再通过一个HA组件，不停的向Master拉取数据，然后添加到自身的commitLog中。
+  Slave会启动一个定时任务，10秒轮训一次，向Master拉取topic信息、消费者offset和订阅组信息等。再通过一个HA组件，不停的向Master拉取数据，然后添加到自身的commitLog中。
 
   
 
