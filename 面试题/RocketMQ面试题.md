@@ -22,6 +22,7 @@
   - Kafka和RocketMQ都支持集群部署，Kafka当前版本使用ZK进行元数据管理，未来将使用raft算法去除ZK依赖，RocketMQ早期版本也依赖于ZK，后续自己开发了NameServer用于元数据惯例。二者可用性都比较高。
   - Kafka使用Scala进行开发，二次开发成本稍微高一点。RocketMQ使用Java进行开发，对大多数Java程序员更友好。
   - RocketMQ支持的消息种类比较多，功能更丰富，比较适合业务系统。Kafka则比较适合大数据开发、日志采集等。
+  - Kafka的leader分散在broker上。RocketMQ的leader在一个服务上，从节点的使用率没主节点那么高。
 
   
 
@@ -226,6 +227,8 @@
 - RocketMQ有哪些控制台工具？
 
   在服务端的bin目录下，有个mqadmin的工具，也可以使用官方的网页管理工具
+  
+  
 
 
 
