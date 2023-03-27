@@ -1,7 +1,7 @@
 
 ### 组件架构
 
-![img.png](images/img.png)
+![img.png](images/架构图.png)
 
 - Prometheus：作为整个监控系统的核心，提供数据存储，数据查询等功能。
 - Exporter：采集器，有很多种类，如操作系统的采集器、Docker容器的采集器、MySQL的采集器等。Exporter主动去采集数据，然后Prometheus再从Exporter进行数据拉取和存储。
@@ -134,14 +134,23 @@ Spring的Actuator组件，就是用来做监控的。集成了Actuator组件之�
 implementation 'org.springframework.boot:spring-boot-starter-actuator:3.0.4'
 ```
 
-Actuator默认的请求地址是`ip:port/actuator/metrics`，如：
+Actuator默认的请求地址是`ip:port/actuator/prometheus`，如：
 ```shell
-
+curl localhost:8070/actuator/prometheus
 ```
 
 出现一下信息说明部署成功
 ```shell
-
+root@service-0:~# curl localhost:8070/actuator/prometheus
+# HELP jvm_gc_memory_allocated_bytes_total Incremented for an increase in the size of the (young) heap memory pool after one GC to before the next
+# TYPE jvm_gc_memory_allocated_bytes_total counter
+jvm_gc_memory_allocated_bytes_total{application="cloud-gateway",} 1.1533287424E10
+# HELP jvm_classes_unloaded_classes_total The total number of classes unloaded since the Java virtual machine has started execution
+# TYPE jvm_classes_unloaded_classes_total counter
+jvm_classes_unloaded_classes_total{application="cloud-gateway",} 0.0
+# HELP jvm_memory_max_bytes The maximum amount of memory in bytes that can be used for memory management
+# TYPE jvm_memory_max_bytes gauge
+...
 ```
 
 
@@ -200,6 +209,11 @@ scrape_configs:
   - job_name：自己写的名字，随意
   - static_configs.targets：表示采集的ip和端口。
 
+启动完成之后，可以在【Status】->【Targets】中看到exporter的采集信息，如：
+![img.png](images/prometheus采集成功图.png)
+
+状态up的话，说明采集是成功的。
+
 
 ### Grafana部署
 
@@ -214,12 +228,16 @@ docker run -d \
 
 #### Node-Exporter面板
 
+![img.png](images/8919概览1.png)
+![img.png](images/8919概览2.png)
 
 #### Docker-Exporter面板
 
+![img.png](images/13631概览1.png)
+![img_1.png](images/13631概览2.png)
 
 #### Actuator-Exporter面板
 
-
-
+![img.png](images/13694概览1.png)
+![img_1.png](images/13694概览2.png)
 
