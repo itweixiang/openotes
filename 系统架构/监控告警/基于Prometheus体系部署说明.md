@@ -218,25 +218,48 @@ scrape_configs:
 ### Grafana部署
 
 #### 部署
+由于核心的监控数据都在Prometheus节点上，Grafana只是个面板，负责好看就行，所以部署很简单。
+
+`-p`指定一下端口，`-v`指定一下存储相关的数据挂载即可。
 ```shell
 docker run -d \
     --name=grafana \
     --restart=always \
     -p 3000:3000 \
+    -v /data/grafana:/var/lib/grafana \
     grafana/grafana
 ```
 
+完成部署后，通过默认的3000端口即可访问。
+
+数据源的添加也很简单，在齿轮图标点击一下【Data Source】，填写Prometheus的IP端口即可。
+![img.png](images/添加数据源.png)
+
+面板的话，觉得大多大同小异，提供一下我选择的面板ID，大家参考一下即可。
+
 #### Node-Exporter面板
+**面板Id：8919**
+
+- 提供多服务器的概览信息
+- 提供单台服务器的CPU、内存、磁盘、网卡、连接数等相关信息
 
 ![img.png](images/8919概览1.png)
 ![img.png](images/8919概览2.png)
 
 #### Docker-Exporter面板
+**面板Id：13631**
+
+- 提供多服务器Docker的概览信息
+- 提供单台服务器的Docker容器CPU、内存、网络、IO等简要信息
 
 ![img.png](images/13631概览1.png)
 ![img_1.png](images/13631概览2.png)
 
 #### Actuator-Exporter面板
+**面板Id：13694**
+
+- 提供堆内存、直接内存的使用信息
+- 提供垃圾回收的信息
 
 ![img.png](images/13694概览1.png)
 ![img_1.png](images/13694概览2.png)
