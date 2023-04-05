@@ -6,10 +6,10 @@
 
 
 
-找到适合的版本，因为我的系统是Ubuntu，所以选择Linux X86-64的压缩包
+更具自己的操作系统选择适合的版本，因为我的系统是Ubuntu 20.04，所以选择Linux X86-64的压缩包
 ```shell
 # 下载
-wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-8.7.0-linux-x86_64.tar.gz
+wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.9-linux-x86_64.tar.gz
 
 # 解压
 tar -xvf elasticsearch-7.17.9-linux-x86_64.tar.gz
@@ -29,11 +29,11 @@ tar -xvf elasticsearch-7.17.9-linux-x86_64.tar.gz
 - config：es的配置文件
 - jdk：默认自带jdk，如果系统有`JAVA_HOME`的话，会使用`JAVA_HOME`
 - lib：
-- logs：
+- logs：日志目录，有es的基本日志，也有gc日志等。
 - module：
 - plugins：
-- LICENSE.txt：
-- README.asciidoc：
+- LICENSE.txt：elastic的许可说明
+- README.asciidoc：readme说明文件，正常人谁看这个。。
 
 
 
@@ -46,8 +46,6 @@ tar -xvf elasticsearch-7.17.9-linux-x86_64.tar.gz
 > elasticsearch-certgen   elasticsearch-env            elasticsearch-migrate   elasticsearch-service-tokens   elasticsearch-sql-cli-7.17.9.jar  x-pack-security-env
 > elasticsearch-certutil  elasticsearch-env-from-file  elasticsearch-node      elasticsearch-setup-passwords  elasticsearch-syskeygen           x-pack-watcher-env
 > elasticsearch-cli       elasticsearch-geoip          elasticsearch-plugin    elasticsearch-shard            elasticsearch-users
-
-
 
 
 
@@ -86,17 +84,22 @@ cd /data/elasticsearch-7.17.9/bin/
 
 # 启动es
 ./elasticsearch
+
+# 后台进程启动的话，需要加个-d，如
+./elasticsearch -d
 ```
 
 
 
 es启动比较耗资源，需要等个几十秒。
 
+如果没有明显的报错，并且打印了`node  started`相关的日志，那么说明启动成功
+
+> [2023-04-05T15:15:52,306][INFO ][o.e.n.Node               ] [node-1] started
 
 
-如果有打印日志，并且日志打印的差不多，没有明显报错。
 
-那么新开一个窗口，用curl掉一下es的端口，出现如下的类似信息说明安装成功
+新开一个窗口，用curl掉一下es的端口，验证一下
 
 > root@ubuntu:~# curl localhost:9200
 > {
@@ -119,6 +122,22 @@ es启动比较耗资源，需要等个几十秒。
 
 
 
+如果启动出现这个报错
+
+> ERROR: [1] bootstrap checks failed. You must address the points described in the following [1] lines before starting Elasticsearch.
+> bootstrap check failure [1] of [1]: max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+
+
+
+那么需要改下系统的配置
+
+```sh
+echo "vm.max_map_count=655360" >> /etc/sysctl.conf
+sysctl -p
+```
+
+
+
 ### ES配置
 
 因为我是用虚拟机启动的ES，和我本地Windows不是同一台机器，所以在浏览器访问ES，会出现访问不通的情况。
@@ -134,6 +153,114 @@ es启动比较耗资源，需要等个几十秒。
 
 
 
-elasticsearch.yml为ES的主配置文件
+- elasticsearch.yml：为ES的主配置文件
 
-jvm.options为ES的Java虚拟机配置文件
+- jvm.options：为ES的Java虚拟机配置文件
+
+
+
+修改elasticsearch.yml中的IP配置，以打开外部访问
+
+```yaml
+# 表示允许所有IP地址访问
+network.host: 0.0.0.0
+# 本机的ip地址，应该使用内网网卡的IP
+discovery.seed_hosts: ["10.0.24.13"]
+# 节点的名称，随意
+node.name: node-1
+# 集群的master节点，因为单机，所以只有一个
+cluster.initial_master_nodes: ["node-1"]
+```
+
+
+
+修改jvm.options的堆内存大小设置，以限制占用的内存。
+
+```sh
+# 允许使用的最大堆内存
+-Xmx1g
+
+# 允许使用的最小堆内存，设置成最大一样的，防止JVM自动调整
+-Xms1g
+```
+
+
+
+修改完成后再启动es，就能通过浏览器就能够访问es了。
+
+但是别人也可以访问到es，说不定还会删掉我们的一些数据，所以，最好还得设置一下es的密码。
+
+
+
+在elasticsearch.yml中增加如下安全配置
+
+```yaml
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+```
+
+
+
+然后使用工具创建账号密码，工具在es的bin目录中
+
+```sh
+./elasticsearch-setup-passwords auto
+```
+
+
+
+按照提示输入y，然后自动生成密码。如果需要手动设置，那么应该使用`./elasticsearch-setup-passwords interactive`
+
+以下是自动生成的密码。
+
+> Initiating the setup of passwords for reserved users elastic,apm_system,kibana,kibana_system,logstash_system,beats_system,remote_monitoring_user.
+> The passwords will be randomly generated and printed to the console.
+> Please confirm that you would like to continue [y/N]y
+>
+>
+> Changed password for user apm_system
+> PASSWORD apm_system = rHr4bgKGvkAt9YfU7E05
+>
+> Changed password for user kibana_system
+> PASSWORD kibana_system = RSNeo5gQ5cqG13ACffpP
+>
+> Changed password for user kibana
+> PASSWORD kibana = RSNeo5gQ5cqG13ACffpP
+>
+> Changed password for user logstash_system
+> PASSWORD logstash_system = OJywk34QyDzrInlnEYaP
+>
+> Changed password for user beats_system
+> PASSWORD beats_system = KiS6dxeGCm4sX8fSlf5y
+>
+> Changed password for user remote_monitoring_user
+> PASSWORD remote_monitoring_user = FUKJ7soZdNLPVxKh6TYa
+>
+> Changed password for user elastic
+> PASSWORD elastic = IQtX9FoHb5iSZZjgzSae
+
+
+
+
+
+### ES的基础使用
+
+#### 索引操作
+
+- 创建索引
+
+
+
+- 删除索引
+
+
+
+#### 文档操作
+
+- 插入文档
+- 删除文档
+- 查询文档
+- 
+
+
+
