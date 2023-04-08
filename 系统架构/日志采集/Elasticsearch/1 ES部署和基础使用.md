@@ -162,10 +162,10 @@ sysctl -p
 修改elasticsearch.yml中的IP配置，以打开外部访问
 
 ```yaml
-# 表示允许所有IP地址访问
-network.host: 0.0.0.0
 # 本机的ip地址，应该使用内网网卡的IP
-discovery.seed_hosts: ["10.0.24.13"]
+network.host: 0.0.0.0
+# 集群服务器的ip和端口，因为单机，所以只有一个
+discovery.seed_hosts: ["10.0.24.13:9300"]
 # 节点的名称，随意
 node.name: node-1
 # 集群的master节点，因为单机，所以只有一个
@@ -179,7 +179,6 @@ cluster.initial_master_nodes: ["node-1"]
 ```sh
 # 允许使用的最大堆内存
 -Xmx1g
-
 # 允许使用的最小堆内存，设置成最大一样的，防止JVM自动调整
 -Xms1g
 ```
