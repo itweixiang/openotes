@@ -6,7 +6,12 @@
 
 
 
-更具自己的操作系统选择适合的版本，因为我的系统是Ubuntu 20.04，所以选择Linux X86-64的压缩包
+根据自己的操作系统选择适合的版本，因为我的系统是Ubuntu 20.04，所以选择Linux X86-64的压缩包。
+
+
+
+这里我使用的是elasticsearch 7.x的最后一个稳定版本，8.x怕有一些兼容性问题，api也不一定完善。所以还是用上一个大版本的最后一个稳定版本。
+
 ```shell
 # 下载
 wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-7.17.9-linux-x86_64.tar.gz
@@ -162,10 +167,10 @@ sysctl -p
 修改elasticsearch.yml中的IP配置，以打开外部访问
 
 ```yaml
-# 本机的ip地址，应该使用内网网卡的IP
-network.host: 0.0.0.0
+# 本机的ip地址，应该使用linux系统的网卡IP
+network.host: 192.168.0.100
 # 集群服务器的ip和端口，因为单机，所以只有一个
-discovery.seed_hosts: ["10.0.24.13:9300"]
+discovery.seed_hosts: ["192.168.0.100:9300"]
 # 节点的名称，随意
 node.name: node-1
 # 集群的master节点，因为单机，所以只有一个
@@ -187,7 +192,7 @@ cluster.initial_master_nodes: ["node-1"]
 
 修改完成后再启动es，就能通过浏览器就能够访问es了。
 
-但是别人也可以访问到es，说不定还会删掉我们的一些数据，所以，最好还得设置一下es的密码。
+但是别人也可以访问到es，说不定还会删掉我们的一些数据，所以，最好还得设置一下es的密码。**安全问题千万不能忽视。**
 
 
 
@@ -195,7 +200,6 @@ cluster.initial_master_nodes: ["node-1"]
 
 ```yaml
 xpack.security.enabled: true
-xpack.security.transport.ssl.enabled: true
 ```
 
 
@@ -239,6 +243,12 @@ xpack.security.transport.ssl.enabled: true
 > PASSWORD elastic = IQtX9FoHb5iSZZjgzSae
 
 
+
+生成密码后再加入ssl的配置
+
+```yaml
+xpack.security.transport.ssl.enabled: true
+```
 
 
 
