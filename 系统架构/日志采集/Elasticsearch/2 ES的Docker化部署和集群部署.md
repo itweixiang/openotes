@@ -108,12 +108,14 @@ cluster.initial_master_nodes: ["es-0","es-1","es-2"]
 
 
 - node.name：elasticsearch节点的名称，随意，但每个节点不能重复。
-- network.host：对应的ip地址
+- network.host：提供服务的IP地址，一般配置为节点所在服务器的内网地址。此配置会导致节点由开发模式转为生产模式，从而触发引导检查。
+- http.port：服务端口号，默认9200，通常范围为9200~9299
+- transport.port：集群通信端口，默认9300，通常范围为9300~9399
 - cluster.name：集群的名称，自己取。但每个节点的集群名称必须一致。
 - node.master：是否为master节点
 - node.data：是否存储数据
-- discovery.seed_hosts：集群各节点的地址
-- cluster.initial_master_nodes：集群的引导节点，这些节点将参与集群的第一次选举
+- discovery.seed_hosts：此设置提供集群中其他候选节点的列表，并且可能处于活动状态且可联系以播种发现过程。可以是IP地址，也可以是可以解析为IP地址的域名。
+- cluster.initial_master_nodes：指定集群初次选举中用到的候选节点，称为集群引导，只在第一次形成集群时需要。如配置network.host，则此配置为必须配置。重新启动节点或者将新节点添加到现有集群时，不要使用此配置。
 
 
 

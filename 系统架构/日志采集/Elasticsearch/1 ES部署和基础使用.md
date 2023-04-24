@@ -256,20 +256,42 @@ xpack.security.transport.ssl.enabled: true
 
 #### 索引操作
 
-- 创建索引
+- 索引结构
+
+```mermaid
+graph LR
+index-->alias
+index-->settings
+index-->mapping
+settings---静态配置
+settings---动态配置
+静态配置---number_of_shards
+动态配置---number_of_replicas
+动态配置---refresh_interval
+动态配置---max_result_window
+```
+
+number_of_shards
+
+number_of_replicas
+
+refresh_interval
+
+max_result_window
 
 
 
-- 删除索引
+- 索引操作
+
+```mermaid
+graph LR
+PUT---index1(/index_name)
+DELETE---index2(/index_name)
+```
 
 
 
 #### 文档操作
-
-- 插入文档
-- 删除文档
-- 查询文档
-- 
 
 
 
