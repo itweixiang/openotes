@@ -33,10 +33,10 @@ tar -xvf elasticsearch-7.17.9-linux-x86_64.tar.gz
 - bin：es的启动脚本等
 - config：es的配置文件
 - jdk：默认自带jdk，如果系统有`JAVA_HOME`的话，会使用`JAVA_HOME`
-- lib：
+- lib：es所以来的Java库，如lucene
 - logs：日志目录，有es的基本日志，也有gc日志等。
-- module：
-- plugins：
+- module：es的模块，如Cluster，Discovery，Indices
+- plugins：已经安装的插件目录
 - LICENSE.txt：elastic的许可说明
 - README.asciidoc：readme说明文件，正常人谁看这个。。
 
@@ -200,6 +200,7 @@ cluster.initial_master_nodes: ["node-1"]
 
 ```yaml
 xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
 ```
 
 
@@ -244,12 +245,6 @@ xpack.security.enabled: true
 
 
 
-生成密码后再加入ssl的配置
-
-```yaml
-xpack.security.transport.ssl.enabled: true
-```
-
 
 
 ### ES的基础使用
@@ -271,13 +266,13 @@ settings---动态配置
 动态配置---max_result_window
 ```
 
-number_of_shards
+number_of_shards：主分片数量，只能在创建索引时设置，默认为1。
 
-number_of_replicas
+number_of_replicas：主分片的副本数。默认为 1，允许配置为 0。
 
-refresh_interval
+refresh_interval：写入罗盘的频率，默认为1， 可以设置 -1 为禁用刷新。
 
-max_result_window
+max_result_window：from + size搜索此索引 的最大值，默认为10000，为安全和性能设置。
 
 
 
@@ -292,6 +287,47 @@ DELETE---index2(/index_name)
 
 
 #### 文档操作
+
+- 文档的数据结构
+
+```json
+{
+    "_index": "索引名称",
+    "_id": "文档id",
+    "_version": "文档版本号",
+    "_seq_no": "索引级别的版本号，索引中所有文档共享一个",
+    "_primary_term": "集群任期",
+    "_source": {
+        "具体的业务字段":"具体的业务数据"
+    }
+}
+```
+
+
+
+- 文档的基础操作
+
+```mermaid
+graph LR
+index---create
+index---update
+index---get
+index---delete("DELETE /index/_doc/id")
+create---c1("PUT /index/_doc/id")
+create---c2("PUT /index/_create/id")
+create---c3("POST /index/_create/id")
+get---g1("GET /index/_doc/id")
+get---g2("GET /index/_source/id")
+get---g3("GET /index/_mget")
+update---u1("POST /index/_update/id")
+update---u2("PUT /index/_update/id")
+g2---只能查询数据字段
+g3---根据id查询多个文档
+u1---批量更新
+u2---全量更新
+```
+
+
 
 
 
