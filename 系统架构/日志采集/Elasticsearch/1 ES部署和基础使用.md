@@ -1,6 +1,8 @@
 
 
-### ES下载
+## 下载安装
+
+### 下载
 
 官网的下载地址：`https://www.elastic.co/cn/downloads/elasticsearch`
 
@@ -42,7 +44,7 @@ tar -xvf elasticsearch-7.17.9-linux-x86_64.tar.gz
 
 
 
-### ES启动
+### 启动
 
 进入bin目录，先看下有哪些脚本
 
@@ -143,7 +145,7 @@ sysctl -p
 
 
 
-### ES配置
+### 配置
 
 因为我是用虚拟机启动的ES，和我本地Windows不是同一台机器，所以在浏览器访问ES，会出现访问不通的情况。
 
@@ -245,13 +247,23 @@ xpack.security.transport.ssl.enabled: true
 
 
 
+> Unexpected response code [503] from calling PUT http://ip:9200/_security/user/apm_system/_password?pretty
+> Cause: Cluster state has not been recovered yet, cannot write to the [null] index
+>
+> Possible next steps:
+> * Try running this tool again.
+> * Try running with the --verbose parameter for additional messages.
+> * Check the elasticsearch logs for additional error details.
+> * Use the change password API manually. 
+>
+>
+> ERROR: Failed to set password for user [apm_system].
 
 
-### ES的基础使用
 
-#### 索引操作
 
-- 索引结构
+
+## 索引结构
 
 ```mermaid
 graph LR
@@ -266,6 +278,8 @@ settings---动态配置
 动态配置---max_result_window
 ```
 
+### settings
+
 number_of_shards：主分片数量，只能在创建索引时设置，默认为1。
 
 number_of_replicas：主分片的副本数。默认为 1，允许配置为 0。
@@ -276,17 +290,36 @@ max_result_window：from + size搜索此索引 的最大值，默认为10000，�
 
 
 
+### mappings
+
+映射字段对应的数据类型
+
+- dynamic mapping
+
+如果没有指定具体字段的数据类型的话，ES会根据第一条数据的数据类型，进行动态映射。
+
+
+
+- Explicit mapping
+
+
+
+
+
 - 索引操作
 
 ```mermaid
 graph LR
 PUT---index1(/index_name)
 DELETE---index2(/index_name)
+index3("GET /index/_mappings")
+index5("GET /index/_mappings/field/fieldName")
+index4("GET /index/_settings")
 ```
 
 
 
-#### 文档操作
+## 文档操作
 
 - 文档的数据结构
 
@@ -316,16 +349,72 @@ index---delete("DELETE /index/_doc/id")
 create---c1("PUT /index/_doc/id")
 create---c2("PUT /index/_create/id")
 create---c3("POST /index/_create/id")
+create---c4("POST /index/_create")
 get---g1("GET /index/_doc/id")
 get---g2("GET /index/_source/id")
 get---g3("GET /index/_mget")
 update---u1("POST /index/_update/id")
 update---u2("PUT /index/_update/id")
+update---u3("PUT /index/_doc/id")
 g2---只能查询数据字段
 g3---根据id查询多个文档
-u1---批量更新
+u1---部分字段更新
 u2---全量更新
+u3---全量更新
 ```
+
+### 创建文档
+
+ES有两种创建文档的HTTP方法，分别是POST和PUT。
+
+两种创建方法的区别在于，PUT请求在语义要求**幂等性**，所以在创建文档的时候，ES需要知道你究竟是要创建哪一条文档？**PUT请求需要指定文档的Id**。而POST请求，则没有幂等性的要求，如果在URL中指定文档的Id，则原先没有这条Id的记录则进行创建，有这条Id的记录则进行更新。POST请求没有指定文档Id的情况下，ES会自动生成一个随机字符串作为Id。
+
+
+
+ 所以，两种的URL规则为
+
+- PUT
+  - `/<index>/_doc/<id>`，没有则创建，有则全量更新。
+  - `/<index>/_create/<id>`，创建文档，如果已有则报错。使用`_create`代替`_doc`。
+- POST
+  - `/<index>/_doc/<id>`，没有则创建，有则全量更新。
+  - `/<index>/_doc`，创建文档，Id随机。
+
+
+
+### 修改文档
+
+与创建一样，修改文档也可以使用POST和PUT请求，并且也可以使用`_update`代替`_doc`，如
+
+- PUT
+
+  - `/<index>/_doc/<id>`，全量更新
+
+- POST
+
+  - `/<index>/_doc/<id>`，全量更新
+
+  - `/<index>/_update/<id>`，可全量更新，可部分更新。语法如下
+
+    ```json
+    {
+        "doc": {
+            "部分更新的字段": "字段的具体数值"
+        }
+    }
+    ```
+
+
+
+### 查询文档
+
+根据Id查，指定查询的字段，根据Id批量查询
+
+
+
+### 删除文档
+
+
 
 
 
