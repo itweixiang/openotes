@@ -2,6 +2,7 @@
 - MongoDB和Elasticsearch有什么区别？
 - MongoDB和CouchDB和CouchBase有什么区别？
 - 为什么用MongoDB？
+- Mongo各个版本有什么区别？
 - 什么是集合？
 - 什么是文档？
 - ObjectID由哪些部分组成？
