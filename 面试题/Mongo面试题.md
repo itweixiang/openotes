@@ -1,4 +1,33 @@
 - MongoDB和MySQL有什么区别？
 - MongoDB和Elasticsearch有什么区别？
+- MongoDB和CouchDB和CouchBase有什么区别？
 - 为什么用MongoDB？
-- 
+- 什么是集合？
+- 什么是文档？
+- ObjectID由哪些部分组成？
+- 什么是mongod？
+- mongod参数有什么？
+- 如何添加索引？
+- 用什么方法可以格式化输出结果？
+- 什么是聚合？
+- 为什么MongoDB的磁盘占用很高？
+- GridFS在MongoDB中的作用是什么？
+- 分析器在MongoDB中的作用是什么？
+- 名字空间(namespace)是什么？
+- MongoDB允许存储空值null？
+- 更新操作立刻fsync到磁盘？
+- 如何执行事务/加锁？
+- 什么是master或primary？
+- 什么是secondary或slave？
+- 启用备份故障恢复需要多久？
+- 初期使用集群分片还是使用非集群分片？
+- 分片(sharding)和复制(replication)是怎样工作的？
+- 数据在什么时候才会扩展到多个分片(shard)里？
+- 当我试图更新一个正在被迁移的块(chunk)上的文档时会发生什么？
+- 如果在一个分片(shard)停止或者很慢的时候，我发起一个查询会怎样？
+- 可以把moveChunk目录里的旧文件删除吗？、
+- 块移动操作(moveChunk)失败了，我需要手动清除部分转移的文档吗？
+- 当更新一个正在被迁移的块（Chunk）上的文档时会发生什么？
+- MongoDB在A:{B,C}上建立索引，查询A:{B,C}和A:{C,B}都会使用索引吗？
+- MongoDB支持存储过程吗？如果支持的话，怎么用？
+
