@@ -227,7 +227,7 @@ docker run -d \
     --restart=always \
     -p 3000:3000 \
     -v /data/grafana:/var/lib/grafana \
-    grafana/grafana
+    grafana/grafana	
 ```
 
 完成部署后，通过默认的3000端口即可访问。
