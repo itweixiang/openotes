@@ -53,7 +53,7 @@ PORT=3306
 #需要备份的数据名称
 DATABASE=dbname
 #备份的目录
-BACK_DIR=/data/back/${ENV}/${DATABASE}
+BACK_DIR=/data/back/${ENV}/mysql/${DATABASE}
 
 echo "==================BACK ${ENV} START=================="
 mkdir -p ${BACK_DIR}
@@ -63,7 +63,7 @@ mysqlpump -h${IP} -u${USERNAME} -p${PASSWORD} --databases ${DATABASE} -P${PORT} 
 tar -zcvf ${ENV}-${DATABASE}-backup-$(date +%Y-%m-%d).tar.gz ${DATABASE}.sql
 
 # 删除x天前的备份
-LAST_BACK_NAME=${ENV}-${SERVICE_NAME}-backup-$(date -d '${BACK_DAY} days ago' +%Y-%m-%d).tar.gz
+LAST_BACK_NAME=${ENV}-${DATABASE}-backup-$(date -d '${BACK_DAY} days ago' +%Y-%m-%d).tar.gz
 rm -f ${BACK_DIR}/${LAST_BACK_NAME}
 echo "==================BACK ${ENV} END=================="
 ```
