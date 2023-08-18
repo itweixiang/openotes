@@ -2,7 +2,11 @@
 
 ### 安装redis-dump
 
-redis-dump由ruby编写，所以需要先安装ruby。redis-dump对ruby的版本有要求，os源中的ruby版本不支持。所以需要先使用rvm安装高版本的ruby。
+redis-dump由ruby编写，所以需要先安装ruby。
+
+redis-dump对ruby的版本有要求，os源中的ruby版本不支持。
+
+所以需要先使用rvm安装高版本的ruby。
 
 
 
@@ -39,8 +43,6 @@ gem install redis-dump
 
 
 
-
-
 ### 导出redis数据
 
 - redis-dump相关参数
@@ -67,8 +69,6 @@ gem install redis-dump
 ```sh
 redis-dump -u 127.0.0.1:6379 -a Dl@admin123 > redis.json
 ```
-
-
 
 
 

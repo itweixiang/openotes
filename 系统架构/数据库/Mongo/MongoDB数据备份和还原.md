@@ -73,7 +73,7 @@ mongodump -h ${IP}:${PORT} \
 tar -zcvf ${ENV}-${DATABASE}-backup-$(date +%Y-%m-%d).tar.gz ${BACK_DIR}/dump
 
 # 删除x天前的备份
-LAST_BACK_NAME=${ENV}-${SERVICE_NAME}-backup-$(date -d  '7 days ago' +%Y-%m-%d).tar.gz
+LAST_BACK_NAME=${ENV}-${DATABASE}-backup-$(date -d  '7 days ago' +%Y-%m-%d).tar.gz
 rm -f ${BACK_DIR}/${LAST_BACK_NAME}
 echo "==================BACK ${ENV} END=================="
 ```
