@@ -103,6 +103,12 @@ node.master: true
 node.data: true
 discovery.seed_hosts: ["192.168.0.100:9300","192.168.0.101:9300","192.168.0.102:9300"]
 cluster.initial_master_nodes: ["es-0","es-1","es-2"]
+
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true
+xpack.security.transport.ssl.verification_mode: certificate
+xpack.security.transport.ssl.keystore.path: /opt/elasticsearch/cert/elastic-certificates.p12
+xpack.security.transport.ssl.truststore.path: /opt/elasticsearch/cert/elastic-certificates.p12
 ```
 
 

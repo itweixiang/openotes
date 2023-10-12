@@ -141,6 +141,15 @@ es启动比较耗资源，需要等个几十秒。
 ```sh
 echo "vm.max_map_count=655360" >> /etc/sysctl.conf
 sysctl -p
+
+PUT /_cluster/settings
+{
+    "persistent": {
+        "cluster": {
+            "max_shards_per_node": 10000
+        }
+    }
+}
 ```
 
 
