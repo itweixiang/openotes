@@ -20,7 +20,7 @@
 ```sh
 # apt install -y mysql-client-core-8.0 
 # 需要先安装mysql的客户端
-mysqlpump -uroot -pDl@admin123 --databases dl_cloud --single-transaction > /data/dl_cloud.sql
+mysqlpump --default-character-set UTF8 -uroot -pDl@admin123 --databases dl_cloud --single-transaction > /data/dl_cloud.sql
 ```
 
 
