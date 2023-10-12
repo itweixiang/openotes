@@ -1,5 +1,27 @@
 ### 下载安装
 
+- linux安装
+
+官方下载地址：`https://www.mongodb.com/download-center/community/releases`
+
+linux 可以通过对应的一键安装包安装，也可以通过下载对应的tar包安装。这里我选择后者。`https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-ubuntu2004-6.0.6.tgz`
+
+
+
+```sh
+./bin/mongod --dbpath=./data --logpath=./logs/mongo.log --fork
+```
+
+
+
+
+
+- docker安装
+
+
+
+
+
 
 
 ### 常用命令
