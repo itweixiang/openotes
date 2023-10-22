@@ -1,0 +1,10 @@
+cluster.name: cloud-prod-elasticsearch
+node.name: elasticsearch-0
+network.host: 10.40.142.58
+node.master: true
+node.data: true
+discovery.seed_hosts: ["10.40.142.58:9300","10.40.131.200:9300","10.40.141.212:9300"]
+cluster.initial_master_nodes: ["elasticsearch-0","elasticsearch-1","elasticsearch-2"]
+
+xpack.security.enabled: true
+xpack.security.transport.ssl.enabled: true

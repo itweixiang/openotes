@@ -146,7 +146,7 @@ PUT /_cluster/settings
 {
     "persistent": {
         "cluster": {
-            "max_shards_per_node": 10000
+            "max_shards_per_node": 99999
         }
     }
 }

@@ -143,3 +143,7 @@ curl http://192.168.0.100:9200/_cluster/state?pretty
 
 
 
+elasticsearch-certutil ca
+
+elasticsearch-certutil cert --ca elastic-stack-ca.p12
+
