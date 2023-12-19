@@ -226,7 +226,7 @@ docker run -d \
     --name=grafana \
     --restart=always \
     -p 3000:3000 \
-    -v /data/grafana:/var/lib/grafana \
+    -v /data/grafana/data:/var/lib/grafana \
     grafana/grafana	
 ```
 
