@@ -1,6 +1,8 @@
 - Elasticsearch的倒排索引是什么？
 - Elasticsearch索引数据多了怎么办，如何调优，部署？
 - Elasticsearch是如何实现master选举的？
+- Elasticsearch是如何聚合数据的？
+- Elasticsearch有哪几种节点类型
 - Elasticsearch索引文档的过程是怎样的？
 - Elasticsearch搜索的过程是怎样的？
 - Elasticsearch在部署时，对Linux的设置有哪些优化方法？
