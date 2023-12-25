@@ -1,0 +1,75 @@
+groups:
+- name: 服务器告警
+  rules:
+  - alert: 服务器宕机
+    expr: up{job="node"} == 0
+    for: 1m
+    labels:
+      severity: fatal
+    annotations:
+      summary: "服务器【{{$labels.nodename}}】宕机"
+      description: "服务器【{{$labels.nodename}}】宕机"
+
+  - alert: 服务器CPU使用率过高
+    expr: (sum by (instance) (avg by (mode, instance) (rate(node_cpu_seconds_total{mode!="idle"}[5m])))) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"} * 100 > 90
+    for: 10m
+    labels:
+      severity: warning
+    annotations:
+      summary: "服务器【{{ $labels.nodename }}】CPU使用率过高"
+      description: "服务器【{{ $labels.nodename }}】CPU使用率过高，当前使用{{ humanize $value  }}%"
+
+  - alert: 服务器内存不足
+    expr: 100-(node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 ) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"} > 95
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "服务器【{{ $labels.nodename }}】内存不足"
+      description: "服务器【{{ $labels.nodename }}】内存不足，当前使用{{ humanize $value  }}%"
+
+  - alert: 服务器网络流入异常
+    expr: (sum by (instance) (rate(node_network_receive_bytes_total[5m])) / 1024 / 1024 ) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"} > 100
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "服务器【{{ $labels.nodename }}】网络流入大于100M"
+      description: "服务器【{{ $labels.nodename }}】网络流入大于100M/s，当前使用{{ humanize $value  }}M/s"
+
+  - alert: 服务器网络流出异常
+    expr: (sum by (instance) (rate(node_network_transmit_bytes_total[5m])) / 1024 / 1024 ) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"} > 100
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "服务器【{{ $labels.nodename }}】网络流出大于100M"
+      description: "服务器【{{ $labels.nodename }}】网络流出大于100M/s，当前使用{{ humanize $value  }}M/s"
+
+  - alert: 服务器磁盘写异常
+    expr: (sum by (instance) (rate(node_disk_written_bytes_total[5m])) / 1024 / 1024 ) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"} > 200
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "服务器【{{ $labels.nodename }}】磁盘写入大于200M"
+      description: "服务器【{{ $labels.nodename }}】磁盘写入大于200M/s，当前使用{{ humanize $value  }}M/s"
+
+  - alert: 服务器磁盘读异常
+    expr: (sum by (instance) (rate(node_disk_read_bytes_total[5m])) / 1024 / 1024 ) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"} > 200
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "服务器【{{ $labels.nodename }}】磁盘读大于200M"
+      description: "服务器【{{ $labels.nodename }}】磁盘读大于200M/s，当前使用{{ humanize $value  }}M/s"
+
+  - alert: 服务器磁盘空间不足
+    expr: 100 - ((node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes and ON (instance, device, mountpoint) node_filesystem_readonly == 0) * on(instance) group_left (nodename) node_uname_info{nodename=~".+"}  > 80
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "服务器【{{ $labels.nodename }}】磁盘使用已大于80%"
+      description: "服务器【{{ $labels.nodename }}】磁盘使用已大于80%，当前使用{{ humanize $value  }}%"
+

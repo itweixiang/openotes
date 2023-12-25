@@ -1,0 +1,57 @@
+groups:
+- name: Redis告警
+  rules:
+  - alert: Redis宕机
+    expr: redis_up == 0
+    for: 1m
+    labels:
+      severity: critical
+    annotations:
+      summary: Redis节点宕机
+      description: "Redis节点(instance {{ $labels.instance }})发生宕机，请紧急排查！！！"
+
+  - alert: Redis-Master节点变更
+    expr: changes(redis_connected_slaves[1m]) > 1
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: Redis-Master节点变更
+      description: "Redis-Master节点变更，请关注Redis集群状态"
+
+  - alert: Redis备份异常
+    expr: time() - redis_rdb_last_save_timestamp_seconds > 60 * 60 * 24
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: Redis备份异常
+      description: "Redis备份异常，已经超过24小时没备份了"
+
+  - alert: Redis内存不足
+    expr: 100*redis_memory_used_bytes / (1024*1024*1024*2) >80
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: Redis内存不足
+      description: "Redis内存不足，目前已使用超过80%，请尽快扩容！！！"
+
+  - alert: Redis连接数过多
+    expr: redis_connected_clients / redis_config_maxclients * 100 > 80
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: Redis连接数过多
+      description: "Redis连接数过多，目前已使用超过80%，请紧急排查！！！"
+
+
+  - alert: Redis拒绝连接
+    expr: increase(redis_rejected_connections_total[1m]) > 0
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: Redis拒绝连接
+      description: "Redis拒绝连接，可能集群状态不稳定，请尽快排查"

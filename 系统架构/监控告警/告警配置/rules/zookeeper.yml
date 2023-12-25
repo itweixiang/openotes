@@ -1,0 +1,101 @@
+groups:
+- name: Zookeeper告警
+  rules:
+  - alert: Zookeeper宕机
+    expr: up{job="zookeeper"} == 0
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper宕机"
+      description: "Zookeeper宕机宕机，请紧急排查！！！"
+
+  - alert: Zookeeper节点过多
+    expr: znode_count > 10000
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper节点过多"
+      description: "Zookeeper节点数大于1W，请排查是否合理"
+
+  - alert: Zookeeper连接数过多
+    expr: num_alive_connections > 50
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper连接数过多"
+      description: "Zookeeper连接数过多，目前大于50，请排查是否合理"
+
+  - alert: Zookeeper节点占用的内存过多
+    expr: approximate_data_size /1024 /1024 > 1 * 1024
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper节点占用的内存过多"
+      description: "Zookeeper节点占用的内存过多，目前已大于1G，请紧急排查！！！"
+
+  - alert: Zookeeper监听数过多
+    expr: watch_count > 100000
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper监听数过多"
+      description: "Zookeeper监听数过多，目前大于10000，请排查是否合理"
+
+  - alert: Zookeeper发生集群选举
+    expr: increase(election_time_count[5m]) > 0
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper发生集群选举"
+      description: "Zookeeper发生集群选举，请关注Zookeeper集群健康"
+
+  - alert: Zookeeper打开过多的文件
+    expr: open_file_descriptor_count > 300
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper打开过多的文件"
+      description: "Zookeeper打开过多的文件，目前大于300，请排查是否合理"
+
+  - alert: Zookeeper数据同步时间过长
+    expr: rate(fsynctime_sum[1m]) > 100
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper数据同步时间过长"
+      description: "Zookeeper数据同步时间过长，目前大于100ms，请关注Zookeeper集群健康"
+
+  - alert: Zookeeper快照时间过长
+    expr: rate(snapshottime_sum[5m]) > 100
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper快照时间过长"
+      description: "Zookeeper快照时间过长，目前大于100ms，请关注Zookeeper集群健康"
+
+  - alert: Zookeeper时延过高
+    expr: avg_latency > 100
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper时延过高"
+      description: "Zookeeper时延过高，目前大于100，请关注Zookeeper集群健康"
+
+  - alert: Zookeeper堆内存不足
+    expr: jvm_memory_bytes_used / jvm_memory_bytes_max{area="heap"} > 0.8
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Zookeeper堆内存不足"
+      description: "Zookeeper堆内存不足，目前已使用超过80%，请紧急排查！！！"

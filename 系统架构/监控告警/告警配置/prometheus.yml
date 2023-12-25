@@ -1,0 +1,130 @@
+global:
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+          - "us-system-component:9105"   
+
+rule_files:
+  - "/opt/bitnami/prometheus/conf/rules/*.yml"
+
+scrape_configs:
+  - job_name: "node"
+    static_configs:
+            - targets: [
+                "us-prod-nginx-web:9100",
+                "us-prod-mqtt-0:9100",
+                "us-prod-http-0:9100",
+                "us-system-component:9100",
+                "demo:9100",
+                "us-tutk-1:9100",
+                "us-tutk-2:9100",
+                "analysis:9100",
+                "us-prod-mongodb:9100",
+                "us-prod-kafka-0:9100",
+                "us-prod-kafka-1:9100",
+                "us-prod-kafka-2:9100",
+                "us-prod-service-0:9100",
+                "us-prod-service-1:9100",
+                "us-prod-service-3:9100",
+                "us-prod-service-4:9100",
+                "us-prod-service-5:9100",
+                "us-prod-component-0:9100",
+                "us-prod-component-1:9100",
+                "us-prod-component-2:9100"
+              ]
+  - job_name: "docker"
+    static_configs:
+      - targets: [
+                "us-system-component:9101",
+                "us-prod-service-3:9101",
+                "us-prod-service-4:9101",
+                "us-prod-service-5:9101",
+                "us-prod-component-0:9101",
+                "us-prod-component-1:9101",
+                "us-prod-component-2:9101"
+              ]              
+  - job_name: "springboot"
+    metrics_path: '/actuator/prometheus'
+    static_configs:
+      - targets: [
+          # mqtt
+          "us-prod-service-3:8076",
+          "us-prod-service-4:8076",
+          "us-prod-service-5:8076",
+          # device
+          "us-prod-service-3:8073",
+          "us-prod-service-4:8073",
+          "us-prod-service-5:8073",
+          # data
+          "us-prod-service-3:8078",
+          "us-prod-service-4:8078",
+          "us-prod-service-5:8078",
+          # gateway
+          "us-prod-service-3:8070",
+          "us-prod-service-4:8070",
+          "us-prod-service-5:8070",
+          # admin
+          "us-prod-service-0:8071",
+          # infrastructure
+          "us-prod-service-0:8074",
+          "us-prod-service-1:8074",
+          # member
+          "us-prod-service-0:8072",
+          "us-prod-service-1:8072",
+          # mall
+          "us-prod-service-0:8091",
+          "us-prod-service-1:8091"
+          # auth
+          # "us-prod-service-0:8075",
+          # "us-prod-service-1:8075",
+          # smarthome
+          # "us-prod-service-0:8077",
+          #"us-prod-service-1:8077"          
+        ]
+
+  - job_name: "elasticsearch"
+    static_configs:
+      - targets: ["us-system-component:9102"]
+      
+  - job_name: "mongodb"
+    static_configs:
+      - targets: ["us-prod-mongodb:9103"]
+
+  - job_name: "pushgateway"
+    static_configs:
+      - targets: ["us-system-component:9104"]
+        labels:
+          instance: pushgateway
+
+
+  - job_name: "kafka-exporter"
+    static_configs:
+      - targets: ["us-system-component:9107"]   
+
+  - job_name: 'redis-exporter-targets'
+    static_configs:
+      - targets:
+        - redis://10.40.142.58:6379
+        - redis://10.40.131.200:6379
+        - redis://10.40.141.212:6379 
+        - redis://10.40.142.58:6380
+        - redis://10.40.131.200:6380
+        - redis://10.40.141.212:6380
+    metrics_path: /scrape
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.40.0.155:9108
+  
+  ## config for scraping the exporter itself
+  #  - job_name: 'redis_exporter'
+  # static_configs:
+  #   - targets:
+  #     - 10.40.0.155:9108
+  - job_name: zookeeper
+    static_configs:
+            - targets: ["us-prod-kafka-0:7000","us-prod-kafka-1:7000","us-prod-kafka-2:7000"]    

@@ -1,0 +1,19 @@
+groups:
+- name: MongoDB告警
+  rules:
+  - alert: MongoDB宕机
+    expr: mongodb_up == 0
+    for: 1m
+    labels:
+      severity: fatal
+    annotations:
+      summary: "MongoDB宕机"
+      description: "MongoDB宕机，请紧急排查！！！"
+  - alert: MongoDB读写频繁
+    expr: sum(irate(mongodb_mongod_metrics_document_total[5m])) > 16000
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "MongoDB读写频繁"
+      description: "MongoDB读写频繁，请检查是否流量是否正常"

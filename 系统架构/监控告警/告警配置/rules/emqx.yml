@@ -1,0 +1,11 @@
+groups:
+- name: MQTT集群告警
+  rules:
+  - alert: MQTT消息堆积
+    expr: sum(irate(emqx_delivery_dropped_queue_full[5m])) > 10
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "MQTT消息堆积"
+      description: "MQTT集群消息堆积已达最大值，请紧急排查！！！"

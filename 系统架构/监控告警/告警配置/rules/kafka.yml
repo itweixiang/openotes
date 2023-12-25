@@ -1,0 +1,31 @@
+groups:
+- name: Kafka告警
+  rules:
+  - alert: Kafka宕机
+    expr: kafka_brokers == 0
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Kafka宕机"
+      description: "Kafka宕机宕机，请紧急排查！！！"
+
+
+  - alert: Kafka消息堆积严重
+    expr: sum(kafka_consumergroup_lag) > 100000
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Kafka消息堆积"
+      description: "Kafka消息堆积大于10W条，疑似cloud-data异常"
+
+  - alert: cloud-mqtt生产消息慢
+    expr: sum(delta(kafka_topic_partition_current_offset{topic="mqtt_command_prod"}[5m])/5) by (mqtt_command_prod) < 80000
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "cloud-mqtt生产消息慢"
+      description: "cloud-mqtt生产消息每分钟小于45K条，疑似生产者异常"
+

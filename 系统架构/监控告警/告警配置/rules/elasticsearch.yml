@@ -1,0 +1,20 @@
+groups:
+- name: Elasticsearch告警
+  rules:
+  - alert: ES宕机
+    expr: elasticsearch_node_stats_up == 0
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Elasticsearhc宕机"
+      description: "Elasticsearch宕机，请紧急排查！！！"
+
+  - alert: Elasticsearch CPU使用率过高
+    expr: elasticsearch_process_cpu_percent > 50
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "ES CPU使用率过高"
+      description: "Elasticsearch CPU使用率大于50%，疑似频繁写入，请检查相关写入"

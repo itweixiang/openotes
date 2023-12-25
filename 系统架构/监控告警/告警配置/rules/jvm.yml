@@ -1,0 +1,20 @@
+groups:
+- name: 微服务告警
+  rules:
+  - alert: 微服务内存不足
+    expr: jvm_memory_used_bytes{job="springboot", area="heap"} / jvm_memory_max_bytes{job="springboot", area="heap"} * 100 > 70
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "微服务内存不足"
+      description: "微服务 {{ $labels.application }} 内存占用超过70%，可以适当调大堆内存"
+
+  - alert: 微服务内存溢出
+    expr: jvm_memory_used_bytes{job="springboot", area="heap"} / jvm_memory_max_bytes{job="springboot", area="heap"} * 100 > 90
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "微服务内存溢出"
+      description: "微服务 {{ $labels.application }} 内存占用超过90%，疑似发生内存溢出！！！"
